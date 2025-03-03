@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Add fade effect for images on scroll
-    const fadeElements = document.querySelectorAll('.image-placeholder');
+    const fadeElements = document.querySelectorAll('.image-placeholder, .cat-image');
     
     function checkFade() {
         fadeElements.forEach(element => {
@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (elementPosition.top < windowHeight) {
                 element.style.opacity = '1';
+                if (element.classList.contains('lazy-load')) {
+                    element.classList.add('loaded');
+                }
             }
         });
     }
@@ -107,4 +110,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check on load and scroll
     window.addEventListener('load', checkFade);
     window.addEventListener('scroll', checkFade);
+    
+    // Implement lazy loading for images
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = document.querySelectorAll('img.cat-image');
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const image = entry.target;
+                        if (image.dataset.src) {
+                            image.src = image.dataset.src;
+                            image.classList.add('loaded');
+                        }
+                        imageObserver.unobserve(image);
+                    }
+                });
+            });
+            
+            lazyImages.forEach(function(image) {
+                // Only setup lazy loading if we're not on a fast connection
+                if (navigator.connection && navigator.connection.saveData === true) {
+                    const src = image.src;
+                    image.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
+                    image.dataset.src = src;
+                    image.classList.add('lazy-load');
+                    imageObserver.observe(image);
+                }
+            });
+        }
+    });
+    
+    // Mobile menu enhancements
+    const dropdownBtn = document.querySelector('.dropbtn');
+    const dropdownContent = document.querySelector('.dropdown-content');
+    
+    if (dropdownBtn && dropdownContent) {
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropbtn') && !dropdownContent.contains(event.target)) {
+                dropdownContent.style.display = 'none';
+            }
+        });
+        
+        // Toggle dropdown on mobile
+        dropdownBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (dropdownContent.style.display === 'block') {
+                dropdownContent.style.display = 'none';
+            } else {
+                dropdownContent.style.display = 'block';
+            }
+        });
+    }
 });

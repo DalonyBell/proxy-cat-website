@@ -497,11 +497,43 @@ textarea {
     text-decoration: underline;
 }
 
+.cat-image {
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition-speed);
+}
+
+.cat-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 600px) {
+    .cat-image {
+        min-height: 200px;
+    }
+}
+
+/* Lazy loading styles */
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
 /* Responsive Design */
 @media (max-width: 900px) {
     .content-section,
     .content-section.reverse {
         flex-direction: column;
+        gap: 30px;
     }
     
     .donate-section {
@@ -519,11 +551,60 @@ textarea {
     .hero h1 {
         font-size: 36px;
     }
+    
+    .container {
+        padding: 30px 15px;
+    }
+    
+    .gallery-item {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero {
+        padding: 50px 15px;
+    }
+    
+    .hero h1 {
+        font-size: 32px;
+    }
+    
+    .content-section {
+        margin-bottom: 40px;
+    }
+    
+    .text-content h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .navbar {
+        padding: 15px;
+    }
+    
+    .sponsor-logos {
+        gap: 15px;
+    }
+    
+    .sponsor {
+        font-size: 16px;
+    }
+    
+    .image-placeholder, .cat-image {
+        height: 250px;
+    }
+    
+    .cta-button {
+        display: block;
+        text-align: center;
+    }
 }
 
 @media (max-width: 600px) {
     .navbar {
-        padding: 15px 20px;
+        padding: 12px 15px;
     }
     
     .gallery-container {
@@ -536,5 +617,63 @@ textarea {
     
     .card-info {
         grid-template-columns: 1fr;
+    }
+    
+    .hero h1 {
+        font-size: 28px;
+    }
+    
+    .subtitle {
+        font-size: 16px;
+    }
+    
+    .donation-form-container,
+    .login-form-container,
+    .updates-section {
+        padding: 20px 15px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    textarea {
+        padding: 10px;
+        font-size: 16px; /* Prevents auto-zoom on iOS */
+    }
+    
+    .submit-button {
+        padding: 12px 0;
+        width: 100%;
+    }
+    
+    .paypal-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .image-placeholder, .cat-image {
+        height: 200px;
+    }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) {
+    .amount-option {
+        padding: 12px 16px; /* Larger touch targets */
+    }
+    
+    .submit-button,
+    .cta-button,
+    .dropbtn {
+        padding: 14px 24px; /* Larger touch targets */
+    }
+    
+    input[type="checkbox"] {
+        transform: scale(1.2); /* Larger checkboxes */
+    }
+    
+    .dropdown-content a {
+        padding: 15px 20px; /* Larger dropdown targets */
     }
 }
