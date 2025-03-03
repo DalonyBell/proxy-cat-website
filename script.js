@@ -35,13 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Donation form submission
-    const donationForm = document.getElementById('donation-form');
-    if (donationForm) {
-        donationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your donation! This is a demonstration form, so no actual payment has been processed.');
-            // In a real application, you would handle form submission and payment processing here
+    // PayPal Donation form - Set amount before submission
+    const paypalDonationForm = document.querySelector('form[action="https://www.paypal.com/donate"]');
+    if (paypalDonationForm) {
+        paypalDonationForm.addEventListener('submit', function() {
+            // Make sure the amount is added to the form
+            const amountInput = document.getElementById('amount');
+            if (amountInput && amountInput.value) {
+                // Set the amount for PayPal
+                const hiddenAmountInput = document.createElement('input');
+                hiddenAmountInput.type = 'hidden';
+                hiddenAmountInput.name = 'amount';
+                hiddenAmountInput.value = amountInput.value;
+                this.appendChild(hiddenAmountInput);
+            }
         });
     }
 

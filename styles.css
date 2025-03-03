@@ -382,6 +382,25 @@ textarea {
     opacity: 0.7;
 }
 
+.paypal-intro {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.paypal-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.paypal-logo {
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+}
+
 .card-details {
     display: flex;
     flex-direction: column;
