@@ -1,6 +1,3 @@
-Here's the complete updated login.html page with Supabase authentication:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +30,7 @@ Here's the complete updated login.html page with Supabase authentication:
 
     <div class="hero small-hero">
         <h1>Log In</h1>
-        <p class="subtitle">Access Proxy's updates</p>
+        <p class="subtitle">Access donation features</p>
     </div>
 
     <div class="container login-container">
@@ -43,7 +40,7 @@ Here's the complete updated login.html page with Supabase authentication:
             <!-- Login Form -->
             <div id="login-section">
                 <h2>Welcome Back</h2>
-                <p>Log in to receive updates on Proxy's condition and see exclusive content.</p>
+                <p>Log in to support Proxy with a donation</p>
                 
                 <form id="login-form" class="login-form">
                     <div class="form-group">
@@ -68,14 +65,14 @@ Here's the complete updated login.html page with Supabase authentication:
                 </form>
                 
                 <div class="signup-option">
-                    <p>Don't have an account? <a href="#" id="show-signup">Sign up</a> to follow Proxy's journey</p>
+                    <p>Don't have an account? <a href="#" id="show-signup">Sign up</a> to donate to Proxy</p>
                 </div>
             </div>
             
             <!-- Signup Form -->
             <div id="signup-section" style="display: none;">
                 <h2>Create Account</h2>
-                <p>Sign up to follow Proxy's journey and get updates on her condition.</p>
+                <p>Sign up to help Proxy with her medical expenses</p>
                 
                 <form id="signup-form" class="signup-form">
                     <div class="form-group">
@@ -117,7 +114,6 @@ Here's the complete updated login.html page with Supabase authentication:
     </footer>
 
     <script>
-        // Auth handling script - runs after page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle between login and signup forms
             document.getElementById('show-signup').addEventListener('click', function(e) {
@@ -153,7 +149,10 @@ Here's the complete updated login.html page with Supabase authentication:
                         messageDiv.textContent = "Login successful! Redirecting...";
                         messageDiv.className = "auth-message success";
                         setTimeout(() => {
-                            window.location.href = "index.html";
+                            // Check if there's a redirect destination
+                            const redirectTo = localStorage.getItem('redirectAfterLogin') || 'index.html';
+                            localStorage.removeItem('redirectAfterLogin'); // Clear it after use
+                            window.location.href = redirectTo;
                         }, 1500);
                     }
                 } catch (err) {

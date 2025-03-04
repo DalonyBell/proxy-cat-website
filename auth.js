@@ -1,8 +1,9 @@
 // auth.js
-import { createClient } from '@supabase/supabase-js'
-const supabaseUrl = 'https://vplhmlklptetvebtywhn.supabase.co'
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+const SUPABASE_URL = 'https://vplhmlklptetvebtywhn.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwbGhtbGtscHRldHZlYnR5d2huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDExMDkyNDUsImV4cCI6MjA1NjY4NTI0NX0.oNXoqZ5TNRZAIoeta2cnL4FNNgfF4iDDwaQYu-JSoCI';
+
+// Initialize Supabase client using the global object provided by the script tag
+const supabase = supabaseClient.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Function to handle signup
 async function signUp(email, password) {
@@ -13,7 +14,6 @@ async function signUp(email, password) {
     });
     return { user: data.user, error };
   } catch (err) {
-    console.error("SignUp error:", err);
     return { user: null, error: err };
   }
 }
@@ -27,7 +27,6 @@ async function logIn(email, password) {
     });
     return { user: data.user, error };
   } catch (err) {
-    console.error("Login error:", err);
     return { user: null, error: err };
   }
 }
@@ -38,27 +37,23 @@ async function isLoggedIn() {
     const { data } = await supabase.auth.getSession();
     return data.session !== null;
   } catch (err) {
-    console.error("Session check error:", err);
     return false;
   }
 }
 
-// Function to redirect if not logged in
-async function requireAuth() {
+// Function for donation page to check authentication
+async function requireDonateAuth() {
   if (!await isLoggedIn()) {
+    // Store the intention to go to donate page
+    localStorage.setItem('redirectAfterLogin', 'donate.html');
     window.location.href = '/login.html';
+    return false;
   }
+  return true;
 }
 
 // Function to log out
 async function logOut() {
-  try {
-    await supabase.auth.signOut();
-    window.location.href = '/login.html';
-  } catch (err) {
-    console.error("Logout error:", err);
-    return { error: err };
-  }
+  await supabase.auth.signOut();
+  window.location.href = '/index.html';
 }
-
-console.log("Auth.js loaded successfully"); // Debugging line
