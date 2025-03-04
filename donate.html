@@ -7,15 +7,74 @@
     <title>Donate to Help Proxy - My Special Cat</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <!-- Other head content -->
-        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-        <script src="auth.js"></script>
-        <script>
-            // Check authentication when donation page loads
-            document.addEventListener('DOMContentLoaded', async function() {
+    
+    <!-- Supabase Library -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    
+    <script>
+        // On page load, check if user is authenticated - redirect to login if not
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // This will redirect to login if user is not authenticated
                 await requireDonateAuth();
-            });
-        </script>
+                
+                // If we get here, user is authenticated
+                const user = await getCurrentUser();
+                if (user) {
+                    // Update navigation
+                    updateNavigation(true, user);
+                    
+                    // Show donation form with user info pre-filled
+                    const userEmailField = document.getElementById('donor-email');
+                    if (userEmailField) {
+                        userEmailField.value = user.email;
+                    }
+                }
+            } catch (error) {
+                console.error("Authentication error:", error);
+                // If there's an error, redirect to login just to be safe
+                window.location.href = "login.html";
+            }
+        });
+        
+        // Update navigation based on auth status
+        function updateNavigation(isLoggedIn, user) {
+            const dropdownContent = document.querySelector('.dropdown-content');
+            
+            // Clear any existing auth-dependent links
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) logoutLink.remove();
+            
+            const accountInfo = document.getElementById('account-info');
+            if (accountInfo) accountInfo.remove();
+            
+            // Update navigation based on login status
+            if (isLoggedIn && user) {
+                // Add logout option
+                const newLogoutLink = document.createElement('a');
+                newLogoutLink.href = "#";
+                newLogoutLink.id = "logout-link";
+                newLogoutLink.textContent = "Log Out";
+                newLogoutLink.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    await logOut();
+                });
+                dropdownContent.appendChild(newLogoutLink);
+                
+                // Show user info
+                const userInfo = document.createElement('div');
+                userInfo.id = "account-info";
+                userInfo.className = "account-info";
+                userInfo.textContent = `Logged in: ${user.email}`;
+                document.querySelector('.nav-container').prepend(userInfo);
+                
+                // Update login link text
+                const loginLink = document.querySelector('a[href="login.html"]');
+                if (loginLink) loginLink.textContent = "Account";
+            }
+        }
+    </script>
 </head>
 <body>
     <nav class="navbar">
@@ -60,17 +119,23 @@
                 <!-- PayPal Donation Form -->
                 <form action="https://www.paypal.com/donate" method="post" target="_blank" class="donation-form">
                     <!-- REPLACE THIS VALUE WITH YOUR ACTUAL PAYPAL EMAIL -->
-                    <input type="hidden" name="business" value="razvan.spinu.ro@gmail.com" />
-                    <input type="hidden" name="currency_code" value="EURO" />
+                    <input type="hidden" name="business" value="YOUR_PAYPAL_EMAIL@example.com" />
+                    <input type="hidden" name="currency_code" value="USD" />
                     <input type="hidden" name="item_name" value="Proxy's Medical Fund" />
                     
                     <div class="form-group">
-                        <label for="amount">Donation Amount (€)</label>
+                        <label for="donor-email">Your Email</label>
+                        <input type="email" id="donor-email" name="donor-email" readonly>
+                        <p class="form-help">This is your account email</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Donation Amount ($)</label>
                         <div class="amount-options">
-                            <button type="button" class="amount-option" data-amount="10">€10</button>
-                            <button type="button" class="amount-option" data-amount="25">€25</button>
-                            <button type="button" class="amount-option" data-amount="50">€50</button>
-                            <button type="button" class="amount-option" data-amount="100">€100</button>
+                            <button type="button" class="amount-option" data-amount="10">$10</button>
+                            <button type="button" class="amount-option" data-amount="25">$25</button>
+                            <button type="button" class="amount-option" data-amount="50">$50</button>
+                            <button type="button" class="amount-option" data-amount="100">$100</button>
                             <button type="button" class="amount-option custom">Custom</button>
                         </div>
                         <input type="number" id="amount" name="amount" placeholder="Enter amount" min="1" required>
@@ -100,8 +165,7 @@
                 <p>If you'd like to follow Proxy's journey to recovery, please consider signing up for updates through the form below.</p>
             </div>
             <div class="image-content">
-                    <img src="images/proxy-thanks.png" alt="Proxy says thanks" class="cat-image">
-                </div>
+                <img src="images/proxy-thanks.jpg" alt="Proxy says thanks" class="cat-image">
             </div>
         </section>
 

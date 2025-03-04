@@ -1,167 +1,730 @@
-// Handle donation amount selection
-document.addEventListener('DOMContentLoaded', function() {
-    // Donation amount buttons
-    const amountButtons = document.querySelectorAll('.amount-option');
-    const amountInput = document.getElementById('amount');
+/* Variables */
+:root {
+    --primary-dark: #2a2522;
+    --primary-medium: #3c3330;
+    --primary-light: #5e514c;
+    --accent-color: #8c7b75;
+    --text-color: #e6e1dd;
+    --background-gradient: linear-gradient(135deg, #3c3330 0%, #221f1d 100%);
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --transition-speed: 0.3s;
+    --border-radius: 8px;
+    --max-width: 1200px;
+    --success-color: #6bff6b;
+    --error-color: #ff6b6b;
+    --info-color: #6b6bff;
+}
 
-    if (amountButtons.length && amountInput) {
-        amountButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                amountButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // If custom button, focus on input and clear value
-                if (this.classList.contains('custom')) {
-                    amountInput.value = '';
-                    amountInput.focus();
-                } else {
-                    // Set input value to button amount
-                    const amount = this.getAttribute('data-amount');
-                    amountInput.value = amount;
-                }
-            });
-        });
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        // Clear active state when input is clicked
-        amountInput.addEventListener('focus', function() {
-            amountButtons.forEach(btn => btn.classList.remove('active'));
-            const customButton = document.querySelector('.amount-option.custom');
-            if (customButton) {
-                customButton.classList.add('active');
-            }
-        });
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--background-gradient);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: var(--transition-speed);
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1;
+}
+
+/* Navigation */
+.navbar {
+    background-color: var(--primary-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    box-shadow: var(--box-shadow);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: transparent;
+    color: var(--text-color);
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--primary-medium);
+    min-width: 160px;
+    box-shadow: var(--box-shadow);
+    z-index: 1;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--primary-light);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: var(--primary-dark);
+    margin-bottom: 40px;
+}
+
+.small-hero {
+    padding: 50px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+/* Content Sections */
+.content-section {
+    display: flex;
+    margin-bottom: 60px;
+    gap: 40px;
+    align-items: center;
+}
+
+.content-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.text-content {
+    flex: 1;
+}
+
+.image-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.text-content h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.text-content p {
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.image-placeholder {
+    background-color: var(--primary-medium);
+    border-radius: var(--border-radius);
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition-speed);
+}
+
+.image-placeholder:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.image-placeholder i {
+    font-size: 64px;
+    margin-bottom: 16px;
+    color: var(--accent-color);
+}
+
+.large-placeholder {
+    height: 400px;
+}
+
+/* Gallery */
+.gallery {
+    margin-bottom: 60px;
+}
+
+.gallery h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.gallery-item .image-placeholder {
+    height: 200px;
+}
+
+/* CTA Button */
+.cta-button {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    margin-top: 16px;
+    transition: var(--transition-speed);
+}
+
+.cta-button:hover {
+    background-color: var(--text-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-dark);
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: auto;
+}
+
+.sponsors {
+    margin-bottom: 30px;
+}
+
+.sponsors p {
+    margin-bottom: 15px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.sponsor-logos {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.sponsor {
+    font-weight: bold;
+    font-size: 18px;
+    opacity: 0.6;
+    transition: var(--transition-speed);
+}
+
+.sponsor:hover {
+    opacity: 1;
+}
+
+.copyright {
+    font-size: 14px;
+    opacity: 0.5;
+}
+
+/* Donation Form */
+.donate-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.donation-intro ul {
+    margin: 16px 0;
+    padding-left: 20px;
+}
+
+.donation-intro li {
+    margin-bottom: 8px;
+}
+
+.donation-form-container {
+    background-color: var(--primary-medium);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.donation-form-container h3 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: var(--accent-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--primary-light);
+    border-radius: var(--border-radius);
+    background-color: var(--primary-dark);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.amount-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.amount-option {
+    background-color: var(--primary-dark);
+    border: 1px solid var(--primary-light);
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition-speed);
+}
+
+.amount-option:hover {
+    background-color: var(--primary-light);
+}
+
+.amount-option.active {
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+}
+
+.submit-button {
+    background-color: var(--accent-color);
+    color: var(--primary-dark);
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    transition: var(--transition-speed);
+}
+
+.submit-button:hover {
+    background-color: var(--text-color);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+.form-disclaimer {
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.paypal-intro {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.paypal-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.paypal-logo {
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.payment-details h4 {
+    margin-bottom: 15px;
+    color: var(--accent-color);
+}
+
+.form-help {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+/* Updates Section */
+.updates-section {
+    background-color: var(--primary-medium);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.updates-section h3 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: var(--accent-color);
+}
+
+.updates-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Login Page */
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.login-form-container {
+    background-color: var(--primary-medium);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.login-form-container h2 {
+    margin-bottom: 15px;
+    font-size: 28px;
+    color: var(--accent-color);
+}
+
+.login-form-container > p {
+    margin-bottom: 30px;
+}
+
+.login-form {
+    margin-bottom: 20px;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.forgot-password {
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+.signup-option {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.signup-option a {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+/* Authentication styles */
+.auth-message {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: 500;
+}
+
+.auth-message.error {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: var(--error-color);
+}
+
+.auth-message.success {
+    background-color: rgba(0, 255, 0, 0.1);
+    color: var(--success-color);
+}
+
+.auth-message.info {
+    background-color: rgba(0, 0, 255, 0.1);
+    color: var(--info-color);
+}
+
+.password-hint {
+    font-size: 12px;
+    margin-top: 5px;
+    opacity: 0.7;
+}
+
+.account-info {
+    margin-right: 20px;
+    font-size: 14px;
+    padding: 8px 12px;
+    background-color: var(--primary-light);
+    border-radius: var(--border-radius);
+}
+
+/* Cat Image Styles */
+.cat-image {
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition-speed);
+}
+
+.cat-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Lazy loading styles */
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .content-section,
+    .content-section.reverse {
+        flex-direction: column;
+        gap: 30px;
     }
-
-    // PayPal Donation form - Set amount before submission
-    const paypalDonationForm = document.querySelector('form[action="https://www.paypal.com/donate"]');
-    if (paypalDonationForm) {
-        paypalDonationForm.addEventListener('submit', function() {
-            // Make sure the amount is added to the form
-            const amountInput = document.getElementById('amount');
-            if (amountInput && amountInput.value) {
-                // Set the amount for PayPal
-                const hiddenAmountInput = document.createElement('input');
-                hiddenAmountInput.type = 'hidden';
-                hiddenAmountInput.name = 'amount';
-                hiddenAmountInput.value = amountInput.value;
-                this.appendChild(hiddenAmountInput);
-            }
-        });
-    }
-
-    // Updates form submission
-    const updatesForm = document.querySelector('.updates-form');
-    if (updatesForm) {
-        updatesForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for signing up for updates! You\'ll be notified about Proxy\'s progress.');
-            this.reset();
-        });
-    }
-
-    // Login form submission
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('This is a demonstration login form. In a real application, you would be authenticated and logged in.');
-        });
-    }
-
-    // Add smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href !== '#') {
-                e.preventDefault();
-                document.querySelector(href).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Add fade effect for images on scroll
-    const fadeElements = document.querySelectorAll('.image-placeholder, .cat-image');
     
-    function checkFade() {
-        fadeElements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition.top < windowHeight) {
-                element.style.opacity = '1';
-                if (element.classList.contains('lazy-load')) {
-                    element.classList.add('loaded');
-                }
-            }
-        });
+    .donate-section {
+        grid-template-columns: 1fr;
     }
     
-    // Set initial opacity
-    fadeElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transition = 'opacity 0.5s ease-in-out';
-    });
-    
-    // Check on load and scroll
-    window.addEventListener('load', checkFade);
-    window.addEventListener('scroll', checkFade);
-    
-    // Implement lazy loading for images
-    document.addEventListener('DOMContentLoaded', function() {
-        const lazyImages = document.querySelectorAll('img.cat-image');
-        
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        const image = entry.target;
-                        if (image.dataset.src) {
-                            image.src = image.dataset.src;
-                            image.classList.add('loaded');
-                        }
-                        imageObserver.unobserve(image);
-                    }
-                });
-            });
-            
-            lazyImages.forEach(function(image) {
-                // Only setup lazy loading if we're not on a fast connection
-                if (navigator.connection && navigator.connection.saveData === true) {
-                    const src = image.src;
-                    image.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
-                    image.dataset.src = src;
-                    image.classList.add('lazy-load');
-                    imageObserver.observe(image);
-                }
-            });
-        }
-    });
-    
-    // Mobile menu enhancements
-    const dropdownBtn = document.querySelector('.dropbtn');
-    const dropdownContent = document.querySelector('.dropdown-content');
-    
-    if (dropdownBtn && dropdownContent) {
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.matches('.dropbtn') && !dropdownContent.contains(event.target)) {
-                dropdownContent.style.display = 'none';
-            }
-        });
-        
-        // Toggle dropdown on mobile
-        dropdownBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (dropdownContent.style.display === 'block') {
-                dropdownContent.style.display = 'none';
-            } else {
-                dropdownContent.style.display = 'block';
-            }
-        });
+    .login-container {
+        grid-template-columns: 1fr;
     }
-});
+    
+    .login-image {
+        display: none;
+    }
+    
+    .hero h1 {
+        font-size: 36px;
+    }
+    
+    .container {
+        padding: 30px 15px;
+    }
+    
+    .gallery-item {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    .account-info {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero {
+        padding: 50px 15px;
+    }
+    
+    .hero h1 {
+        font-size: 32px;
+    }
+    
+    .content-section {
+        margin-bottom: 40px;
+    }
+    
+    .text-content h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .navbar {
+        padding: 15px;
+    }
+    
+    .sponsor-logos {
+        gap: 15px;
+    }
+    
+    .sponsor {
+        font-size: 16px;
+    }
+    
+    .image-placeholder, .cat-image {
+        height: 250px;
+    }
+    
+    .cta-button {
+        display: block;
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 12px 15px;
+    }
+    
+    .gallery-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .amount-options {
+        flex-direction: column;
+    }
+    
+    .card-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero h1 {
+        font-size: 28px;
+    }
+    
+    .subtitle {
+        font-size: 16px;
+    }
+    
+    .donation-form-container,
+    .login-form-container,
+    .updates-section {
+        padding: 20px 15px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    textarea {
+        padding: 10px;
+        font-size: 16px;
+    }
+    
+    .submit-button {
+        padding: 12px 0;
+        width: 100%;
+    }
+    
+    .paypal-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .cat-image {
+        min-height: 200px;
+    }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) {
+    .amount-option {
+        padding: 12px 16px; /* Larger touch targets */
+    }
+    
+    .submit-button,
+    .cta-button,
+    .dropbtn {
+        padding: 14px 24px; /* Larger touch targets */
+    }
+    
+    input[type="checkbox"] {
+        transform: scale(1.2); /* Larger checkboxes */
+    }
+    
+    .dropdown-content a {
+        padding: 15px 20px; /* Larger dropdown targets */
+    }
+}
