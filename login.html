@@ -1,3 +1,6 @@
+Here's the complete updated login.html page with Supabase authentication:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +11,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Library - MUST come before auth.js -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="auth.js"></script>
 </head>
 <body>
@@ -113,87 +116,92 @@
         <p class="copyright">© 2025 Proxy's Human. All Rights Reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
     <script>
-        // Toggle between login and signup forms
-        document.getElementById('show-signup').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('signup-section').style.display = 'block';
-        });
-        
-        document.getElementById('show-login').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('signup-section').style.display = 'none';
-            document.getElementById('login-section').style.display = 'block';
-        });
-        
-        // Handle login form submission
-        document.getElementById('login-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Auth handling script - runs after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle between login and signup forms
+            document.getElementById('show-signup').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('signup-section').style.display = 'block';
+            });
             
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            const messageDiv = document.getElementById('auth-message');
+            document.getElementById('show-login').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('signup-section').style.display = 'none';
+                document.getElementById('login-section').style.display = 'block';
+            });
             
-            messageDiv.textContent = "Logging in...";
-            messageDiv.className = "auth-message info";
-            
-            try {
-                const { user, error } = await logIn(email, password);
+            // Handle login form submission
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
-                if (error) {
-                    messageDiv.textContent = "Error: " + error.message;
-                    messageDiv.className = "auth-message error";
-                } else {
-                    messageDiv.textContent = "Login successful! Redirecting...";
-                    messageDiv.className = "auth-message success";
-                    setTimeout(() => {
-                        window.location.href = "index.html";
-                    }, 1000);
-                }
-            } catch (err) {
-                messageDiv.textContent = "Error: " + err.message;
-                messageDiv.className = "auth-message error";
-            }
-        });
-        
-        // Handle signup form submission
-        document.getElementById('signup-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const messageDiv = document.getElementById('auth-message');
-            
-            if (password.length < 6) {
-                messageDiv.textContent = "Password must be at least 6 characters";
-                messageDiv.className = "auth-message error";
-                return;
-            }
-            
-            messageDiv.textContent = "Creating account...";
-            messageDiv.className = "auth-message info";
-            
-            try {
-                const { user, error } = await signUp(email, password);
+                const messageDiv = document.getElementById('auth-message');
+                messageDiv.textContent = "Logging in...";
+                messageDiv.className = "auth-message info";
                 
-                if (error) {
-                    messageDiv.textContent = "Error: " + error.message;
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                try {
+                    const { user, error } = await logIn(email, password);
+                    
+                    if (error) {
+                        messageDiv.textContent = "Error: " + error.message;
+                        messageDiv.className = "auth-message error";
+                    } else {
+                        messageDiv.textContent = "Login successful! Redirecting...";
+                        messageDiv.className = "auth-message success";
+                        setTimeout(() => {
+                            window.location.href = "index.html";
+                        }, 1500);
+                    }
+                } catch (err) {
+                    messageDiv.textContent = "An unexpected error occurred. Please try again.";
                     messageDiv.className = "auth-message error";
-                } else {
-                    messageDiv.textContent = "Account created! Please log in.";
-                    messageDiv.className = "auth-message success";
-                    setTimeout(() => {
-                        document.getElementById('signup-section').style.display = 'none';
-                        document.getElementById('login-section').style.display = 'block';
-                    }, 2000);
+                    console.error(err);
                 }
-            } catch (err) {
-                messageDiv.textContent = "Error: " + err.message;
-                messageDiv.className = "auth-message error";
-            }
+            });
+            
+            // Handle signup form submission
+            document.getElementById('signup-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const messageDiv = document.getElementById('auth-message');
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                
+                if (password.length < 6) {
+                    messageDiv.textContent = "Password must be at least 6 characters";
+                    messageDiv.className = "auth-message error";
+                    return;
+                }
+                
+                messageDiv.textContent = "Creating account...";
+                messageDiv.className = "auth-message info";
+                
+                try {
+                    const { user, error } = await signUp(email, password);
+                    
+                    if (error) {
+                        messageDiv.textContent = "Error: " + error.message;
+                        messageDiv.className = "auth-message error";
+                    } else {
+                        messageDiv.textContent = "Account created! Please log in.";
+                        messageDiv.className = "auth-message success";
+                        setTimeout(() => {
+                            document.getElementById('signup-section').style.display = 'none';
+                            document.getElementById('login-section').style.display = 'block';
+                        }, 2000);
+                    }
+                } catch (err) {
+                    messageDiv.textContent = "An unexpected error occurred. Please try again.";
+                    messageDiv.className = "auth-message error";
+                    console.error(err);
+                }
+            });
         });
     </script>
 </body>
 </html>
+```
